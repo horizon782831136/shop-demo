@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block title %}商品管理{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold text-gray-900">商品管理</h1>
+    <a href="/admin" class="text-sm text-gray-500 hover:text-indigo-600">返回后台</a>
+</div>
+
+<!-- 新增商品 -->
+<div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+    <h2 class="font-semibold text-gray-800 mb-4">新增商品</h2>
+    <form action="/admin/products/create" method="post" class="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">商品名称 *</label>
+            <input type="text" name="name" required
+                class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+        <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">价格 *</label>
+            <input type="number" name="price" step="0.01" min="0.01" required
+                class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+        <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">库存</label>
+            <input type="number" name="stock" value="0" min="0"
+                class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+        <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">分类</label>
+            <input type="text" name="category" value="other" list="cat-list"
+                class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <datalist id="cat-list">
+                {% for cat in categories %}<option value="{{ cat }}">{% endfor %}
+            </datalist>
+        </div>
+        <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">图片 URL</label>
+            <input type="text" name="image_url"
+                class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+        <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">描述</label>
+            <input type="text" name="description"
+                class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+        <div class="col-span-2 md:col-span-3">
+            <button type="submit"
+                class="bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition">
+                新增商品
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- 商品列表 -->
+<div class="bg-white rounded-xl shadow-sm overflow-hidden">
+    <table class="w-full text-sm">
+        <thead class="bg-gray-50 text-gray-600">
+            <tr>
+                <th class="text-left px-4 py-3 font-medium">ID</th>
+                <th class="text-left px-4 py-3 font-medium">商品</th>
+                <th class="text-left px-4 py-3 font-medium">分类</th>
+                <th class="text-left px-4 py-3 font-medium">价格</th>
+                <th class="text-left px-4 py-3 font-medium">库存</th>
+                <th class="text-left px-4 py-3 font-medium">操作</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y">
+            {% for product in products %}
+            <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3 text-gray-400">{{ product.id }}</td>
+                <td class="px-4 py-3">
+                    <div class="flex items-center gap-2">
+                        <img src="{{ product.image_url }}" class="w-8 h-8 rounded object-cover bg-gray-100"
+                            onerror="this.src='https://picsum.photos/seed/default/400/400'">
+                        <span class="font-medium text-gray-800 max-w-xs truncate">{{ product.name }}</span>
+                    </div>
+                </td>
+                <td class="px-4 py-3 text-gray-600">{{ product.category }}</td>
+                <td class="px-4 py-3 font-medium text-indigo-600">¥{{ "%.2f"|format(product.price) }}</td>
+                <td class="px-4 py-3 {% if product.stock == 0 %}text-red-500{% else %}text-gray-600{% endif %}">
+                    {{ product.stock }}
+                </td>
+                <td class="px-4 py-3">
+                    <div class="flex gap-2">
+                        <!-- 编辑（内联表单）-->
+                        <button onclick="toggleEdit({{ product.id }})"
+                            class="text-xs text-indigo-600 hover:underline">编辑</button>
+                        <form action="/admin/products/{{ product.id }}/delete" method="post"
+                            onsubmit="return confirm('确认删除？')">
+                            <button type="submit" class="text-xs text-red-500 hover:underline">删除</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            <!-- 编辑行 -->
+            <tr id="edit-{{ product.id }}" class="hidden bg-indigo-50">
+                <td colspan="6" class="px-4 py-3">
+                    <form action="/admin/products/{{ product.id }}/update" method="post"
+                        class="grid grid-cols-2 md:grid-cols-6 gap-2">
+                        <input type="text" name="name" value="{{ product.name }}" placeholder="名称"
+                            class="border rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                        <input type="number" name="price" value="{{ product.price }}" step="0.01" placeholder="价格"
+                            class="border rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                        <input type="number" name="stock" value="{{ product.stock }}" placeholder="库存"
+                            class="border rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                        <input type="text" name="category" value="{{ product.category }}" placeholder="分类"
+                            class="border rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                        <input type="text" name="image_url" value="{{ product.image_url }}" placeholder="图片URL"
+                            class="border rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                        <button type="submit"
+                            class="bg-indigo-600 text-white rounded px-3 py-1 text-xs hover:bg-indigo-700">保存</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+function toggleEdit(id) {
+    const row = document.getElementById('edit-' + id);
+    row.classList.toggle('hidden');
+}
+</script>
+{% endblock %}

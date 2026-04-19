@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}购物车{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl font-bold text-gray-900 mb-6">我的购物车</h1>
+
+{% if items %}
+<div class="grid lg:grid-cols-3 gap-6">
+    <!-- 购物车列表 -->
+    <div class="lg:col-span-2 space-y-3">
+        {% for item in items %}
+        <div class="bg-white rounded-xl shadow-sm p-4 flex items-center gap-4">
+            <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}"
+                class="w-20 h-20 object-cover rounded-lg bg-gray-100"
+                onerror="this.src='https://picsum.photos/seed/default/400/400'">
+            <div class="flex-1 min-w-0">
+                <a href="/products/{{ item.product.id }}"
+                    class="text-sm font-medium text-gray-800 hover:text-indigo-600 line-clamp-2">
+                    {{ item.product.name }}
+                </a>
+                <p class="text-indigo-600 font-bold mt-1">¥{{ "%.2f"|format(item.product.price) }}</p>
+            </div>
+            <!-- 数量修改 -->
+            <form action="/cart/update/{{ item.id }}" method="post" class="flex items-center gap-1">
+                <input type="hidden" name="quantity" id="qty-{{ item.id }}" value="{{ item.quantity }}">
+                <button type="button" onclick="updateQty({{ item.id }}, -1)"
+                    class="w-7 h-7 rounded-full bg-gray-100 hover:bg-gray-200 text-sm font-bold">-</button>
+                <span id="display-{{ item.id }}" class="w-8 text-center text-sm font-medium">{{ item.quantity }}</span>
+                <button type="button" onclick="updateQty({{ item.id }}, 1)"
+                    class="w-7 h-7 rounded-full bg-gray-100 hover:bg-gray-200 text-sm font-bold">+</button>
+                <button type="submit" class="ml-1 text-xs text-indigo-600 hover:underline">更新</button>
+            </form>
+            <!-- 删除 -->
+            <form action="/cart/remove/{{ item.id }}" method="post">
+                <button type="submit" class="text-red-400 hover:text-red-600 text-sm">删除</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- 结算面板 -->
+    <div class="lg:col-span-1">
+        <div class="bg-white rounded-xl shadow-sm p-6 sticky top-24">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">订单汇总</h2>
+            <div class="flex justify-between text-sm text-gray-600 mb-2">
+                <span>共 {{ items|length }} 件商品</span>
+            </div>
+            <div class="flex justify-between font-bold text-lg text-gray-900 border-t pt-3 mb-5">
+                <span>合计</span>
+                <span class="text-indigo-600">¥{{ "%.2f"|format(total) }}</span>
+            </div>
+            <a href="/orders/checkout"
+                class="block text-center bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition">
+                去结算
+            </a>
+            <a href="/products" class="block text-center text-gray-400 text-sm mt-3 hover:text-indigo-600">
+                继续购物
+            </a>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<div class="text-center py-24 text-gray-400">
+    <p class="text-5xl mb-4">🛒</p>
+    <p class="text-lg mb-2">购物车是空的</p>
+    <a href="/products" class="inline-block mt-4 bg-indigo-600 text-white px-6 py-2.5 rounded-full hover:bg-indigo-700 transition">
+        去购物
+    </a>
+</div>
+{% endif %}
+
+<script>
+function updateQty(itemId, delta) {
+    const display = document.getElementById('display-' + itemId);
+    const input = document.getElementById('qty-' + itemId);
+    const current = parseInt(display.textContent);
+    const newVal = Math.max(1, current + delta);
+    display.textContent = newVal;
+    input.value = newVal;
+}
+</script>
+{% endblock %}

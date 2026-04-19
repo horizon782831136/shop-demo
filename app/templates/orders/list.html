@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}我的订单{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl font-bold text-gray-900 mb-6">我的订单</h1>
+
+{% set status_colors = {
+    "pending": "bg-yellow-100 text-yellow-700",
+    "paid": "bg-blue-100 text-blue-700",
+    "shipped": "bg-purple-100 text-purple-700",
+    "completed": "bg-green-100 text-green-700"
+} %}
+
+{% if orders %}
+<div class="space-y-4">
+    {% for order in orders %}
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+        <!-- 订单头部 -->
+        <div class="flex items-center justify-between px-6 py-4 border-b bg-gray-50">
+            <div class="flex items-center gap-4">
+                <span class="text-sm font-medium text-gray-800">订单 #{{ order.id }}</span>
+                <span class="text-xs text-gray-400">{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+            </div>
+            <span class="text-xs px-2.5 py-1 rounded-full font-medium {{ status_colors.get(order.status, 'bg-gray-100 text-gray-600') }}">
+                {{ status_labels.get(order.status, order.status) }}
+            </span>
+        </div>
+        <!-- 商品列表 -->
+        <div class="px-6 py-4 divide-y">
+            {% for item in order.items %}
+            <div class="flex items-center gap-3 py-3 first:pt-0 last:pb-0">
+                <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}"
+                    class="w-12 h-12 object-cover rounded-lg bg-gray-100"
+                    onerror="this.src='https://picsum.photos/seed/default/400/400'">
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm text-gray-800 truncate">{{ item.product.name }}</p>
+                    <p class="text-xs text-gray-400">x{{ item.quantity }} · 单价 ¥{{ "%.2f"|format(item.unit_price) }}</p>
+                </div>
+                <p class="text-sm font-medium text-gray-800">¥{{ "%.2f"|format(item.unit_price * item.quantity) }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        <!-- 合计 -->
+        <div class="flex justify-end px-6 py-3 border-t bg-gray-50">
+            <span class="text-sm text-gray-600 mr-2">订单总额：</span>
+            <span class="font-bold text-indigo-600">¥{{ "%.2f"|format(order.total_price) }}</span>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-24 text-gray-400">
+    <p class="text-5xl mb-4">📦</p>
+    <p class="text-lg mb-2">暂无订单</p>
+    <a href="/products" class="inline-block mt-4 bg-indigo-600 text-white px-6 py-2.5 rounded-full hover:bg-indigo-700 transition">
+        去购物
+    </a>
+</div>
+{% endif %}
+{% endblock %}

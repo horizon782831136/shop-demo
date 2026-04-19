@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}后台概览{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-8">
+    <h1 class="text-2xl font-bold text-gray-900">后台管理</h1>
+    <span class="text-sm text-gray-500">管理员：{{ current_user.username }}</span>
+</div>
+
+<!-- 统计卡片 -->
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    <div class="bg-white rounded-xl shadow-sm p-5">
+        <p class="text-sm text-gray-500 mb-1">商品总数</p>
+        <p class="text-3xl font-bold text-indigo-600">{{ product_count }}</p>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm p-5">
+        <p class="text-sm text-gray-500 mb-1">订单总数</p>
+        <p class="text-3xl font-bold text-green-600">{{ order_count }}</p>
+    </div>
+</div>
+
+<!-- 快捷链接 -->
+<div class="grid md:grid-cols-2 gap-4">
+    <a href="/admin/products"
+        class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition flex items-center gap-4">
+        <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center text-2xl">📦</div>
+        <div>
+            <p class="font-semibold text-gray-800">商品管理</p>
+            <p class="text-sm text-gray-400">添加、编辑、删除商品</p>
+        </div>
+    </a>
+    <a href="/admin/orders"
+        class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition flex items-center gap-4">
+        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center text-2xl">📋</div>
+        <div>
+            <p class="font-semibold text-gray-800">订单管理</p>
+            <p class="text-sm text-gray-400">查看并更新订单状态</p>
+        </div>
+    </a>
+</div>
+{% endblock %}

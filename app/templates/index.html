@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}首页{% endblock %}
+
+{% block content %}
+<!-- Hero Banner -->
+<div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl text-white p-10 mb-10 text-center">
+    <h1 class="text-4xl font-bold mb-3">欢迎来到 ShopDemo</h1>
+    <p class="text-indigo-100 text-lg mb-6">精选好物，品质保证，极速配送</p>
+    <a href="/products"
+        class="inline-block bg-white text-indigo-600 font-semibold px-6 py-3 rounded-full hover:bg-indigo-50 transition">
+        立即选购
+    </a>
+</div>
+
+<!-- 分类导航 -->
+{% if categories %}
+<section class="mb-10">
+    <h2 class="text-xl font-semibold text-gray-800 mb-4">商品分类</h2>
+    <div class="flex flex-wrap gap-3">
+        <a href="/products"
+            class="px-4 py-2 rounded-full border border-indigo-200 text-indigo-600 hover:bg-indigo-600 hover:text-white transition text-sm font-medium">
+            全部
+        </a>
+        {% for cat in categories %}
+        <a href="/products?category={{ cat }}"
+            class="px-4 py-2 rounded-full border border-gray-200 text-gray-600 hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition text-sm font-medium">
+            {{ cat }}
+        </a>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- 推荐商品 -->
+<section>
+    <h2 class="text-xl font-semibold text-gray-800 mb-6">热门推荐</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
+        {% for product in featured %}
+        <a href="/products/{{ product.id }}"
+            class="bg-white rounded-xl shadow-sm hover:shadow-md transition overflow-hidden group">
+            <div class="aspect-square overflow-hidden bg-gray-100">
+                <img src="{{ product.image_url }}" alt="{{ product.name }}"
+                    class="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                    onerror="this.src='https://picsum.photos/seed/default/400/400'">
+            </div>
+            <div class="p-3">
+                <p class="text-sm text-gray-800 font-medium line-clamp-2">{{ product.name }}</p>
+                <p class="text-indigo-600 font-bold mt-1">¥{{ "%.2f"|format(product.price) }}</p>
+                <p class="text-xs text-gray-400 mt-0.5">库存 {{ product.stock }}</p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    <div class="text-center mt-8">
+        <a href="/products"
+            class="inline-block border border-indigo-600 text-indigo-600 px-6 py-2.5 rounded-full hover:bg-indigo-600 hover:text-white transition font-medium">
+            查看全部商品
+        </a>
+    </div>
+</section>
+{% endblock %}

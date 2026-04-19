@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ShopDemo{% endblock %} - ShopDemo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+
+<!-- 导航栏 -->
+<nav class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+            <div class="flex items-center gap-8">
+                <a href="/" class="text-xl font-bold text-indigo-600">ShopDemo</a>
+                <a href="/products" class="text-gray-600 hover:text-indigo-600 text-sm font-medium">全部商品</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <!-- 搜索框 -->
+                <form action="/products" method="get" class="hidden md:flex items-center">
+                    <input type="text" name="keyword" placeholder="搜索商品..."
+                        class="border border-gray-300 rounded-l-md px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 w-48">
+                    <button type="submit"
+                        class="bg-indigo-600 text-white px-3 py-1.5 rounded-r-md text-sm hover:bg-indigo-700">搜索</button>
+                </form>
+                {% if current_user %}
+                    <a href="/cart" class="text-gray-600 hover:text-indigo-600 text-sm font-medium">购物车</a>
+                    <a href="/orders" class="text-gray-600 hover:text-indigo-600 text-sm font-medium">我的订单</a>
+                    {% if current_user.is_admin %}
+                        <a href="/admin" class="text-orange-600 hover:text-orange-700 text-sm font-medium">后台管理</a>
+                    {% endif %}
+                    <span class="text-gray-500 text-sm">{{ current_user.username }}</span>
+                    <a href="/auth/logout"
+                        class="text-sm text-red-500 hover:text-red-700 font-medium">退出</a>
+                {% else %}
+                    <a href="/auth/login"
+                        class="text-sm font-medium text-indigo-600 hover:text-indigo-700">登录</a>
+                    <a href="/auth/register"
+                        class="text-sm font-medium bg-indigo-600 text-white px-3 py-1.5 rounded-md hover:bg-indigo-700">注册</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- 主内容 -->
+<main class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+    {% block content %}{% endblock %}
+</main>
+
+<!-- 页脚 -->
+<footer class="bg-white border-t mt-auto">
+    <div class="max-w-7xl mx-auto px-4 py-6 text-center text-gray-400 text-sm">
+        &copy; 2026 ShopDemo. All rights reserved.
+    </div>
+</footer>
+
+</body>
+</html>
