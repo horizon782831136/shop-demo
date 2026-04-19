@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
 class UserBase(BaseModel):
@@ -9,7 +9,8 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
-    password: str
+    # Fix #7: 强制密码最小长度为 8 位，防止弱密码注册
+    password: str = Field(min_length=8)
 
 
 class UserOut(UserBase):

@@ -11,6 +11,7 @@
 <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
     <h2 class="font-semibold text-gray-800 mb-4">新增商品</h2>
     <form action="/admin/products/create" method="post" class="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <input type="hidden" name="csrf_token" value="{{ request.cookies.get('csrf_token', '') }}">
         <div>
             <label class="block text-xs font-medium text-gray-600 mb-1">商品名称 *</label>
             <input type="text" name="name" required
@@ -89,6 +90,7 @@
                             class="text-xs text-indigo-600 hover:underline">编辑</button>
                         <form action="/admin/products/{{ product.id }}/delete" method="post"
                             onsubmit="return confirm('确认删除？')">
+                            <input type="hidden" name="csrf_token" value="{{ request.cookies.get('csrf_token', '') }}">
                             <button type="submit" class="text-xs text-red-500 hover:underline">删除</button>
                         </form>
                     </div>
@@ -99,6 +101,7 @@
                 <td colspan="6" class="px-4 py-3">
                     <form action="/admin/products/{{ product.id }}/update" method="post"
                         class="grid grid-cols-2 md:grid-cols-6 gap-2">
+                        <input type="hidden" name="csrf_token" value="{{ request.cookies.get('csrf_token', '') }}">
                         <input type="text" name="name" value="{{ product.name }}" placeholder="名称"
                             class="border rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500">
                         <input type="number" name="price" value="{{ product.price }}" step="0.01" placeholder="价格"

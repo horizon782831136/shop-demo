@@ -13,6 +13,7 @@
         {% endif %}
 
         <form action="/auth/login" method="post" class="space-y-5">
+            <input type="hidden" name="csrf_token" value="{{ request.cookies.get('csrf_token', '') }}">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1.5">用户名</label>
                 <input type="text" name="username" required autocomplete="username"

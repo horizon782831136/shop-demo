@@ -13,6 +13,7 @@
         {% endif %}
 
         <form action="/auth/register" method="post" class="space-y-5">
+            <input type="hidden" name="csrf_token" value="{{ request.cookies.get('csrf_token', '') }}">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1.5">用户名</label>
                 <input type="text" name="username" required autocomplete="username"
@@ -29,7 +30,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-1.5">密码</label>
                 <input type="password" name="password" required autocomplete="new-password"
                     class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                    placeholder="至少 6 个字符">
+                    placeholder="至少 8 个字符">
             </div>
             <button type="submit"
                 class="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition">

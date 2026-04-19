@@ -1,6 +1,7 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
+from app.models.cart import CartItem
 from app.models.product import Product
 from app.schemas.product import ProductCreate, ProductUpdate
 
@@ -53,5 +54,7 @@ def update(db: Session, product_id: int, data: ProductUpdate) -> Product:
 
 def delete(db: Session, product_id: int) -> None:
     product = get_by_id(db, product_id)
+    # Fix #6: 先清理关联购物车条目，避免遗留孤立数据
+    db.query(CartItem).filter(CartItem.product_id == product_id).delete()
     db.delete(product)
     db.commit()

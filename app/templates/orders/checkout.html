@@ -46,6 +46,7 @@
                 <span class="text-indigo-600">¥{{ "%.2f"|format(total) }}</span>
             </div>
             <form action="/orders/checkout" method="post">
+                <input type="hidden" name="csrf_token" value="{{ request.cookies.get('csrf_token', '') }}">
                 <button type="submit"
                     class="w-full bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition">
                     确认下单

@@ -38,6 +38,9 @@ logs/
 .DS_Store
 Thumbs.db
 
+# Claude Code 本地配置（Fix #2: 防止敏感本地配置被提交）
+.claude/
+
 # pytest / 测试缓存
 .pytest_cache/
 .coverage
